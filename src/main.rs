@@ -13,27 +13,38 @@ impl Perm {
         }
         Perm(perm)
     }
-    fn size(&self) -> usize { let Perm(x) = self; x.len() }
+    fn size(&self) -> usize {
+        let Perm(x) = self;
+        x.len()
+    }
     fn compose(&self, Perm(other): &Self) -> Self {
         let Perm(me) = self;
         let n = self.size();
         assert_eq!(n, other.len());
         let mut ans = vec![0; n];
-        for i in 0 .. n { ans[i] = other[me[i]]; }
+        for i in 0..n {
+            ans[i] = other[me[i]];
+        }
         Self::new(ans)
     }
-    fn e(n: usize) -> Self { Self::new((0..n).collect()) }
+    fn e(n: usize) -> Self {
+        Self::new((0..n).collect())
+    }
     fn inv(&self) -> Self {
         let Perm(me) = self;
         let n = self.size();
         let mut ans = vec![0; n];
-        for i in 0 .. n { ans[me[i]] = i; }
+        for i in 0..n {
+            ans[me[i]] = i;
+        }
         Self::new(ans)
     }
     fn pow(&self, k: i64) -> Self {
         let n = self.size();
         let mut sum = Self::e(n);
-        if k == 0 { return sum }
+        if k == 0 {
+            return sum;
+        }
         let mut cur = if k < 0 { self.inv() } else { self.clone() };
         let mut k = k.abs();
         while k > 0 {
