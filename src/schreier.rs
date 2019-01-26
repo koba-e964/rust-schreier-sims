@@ -7,8 +7,7 @@ use rand::Rng;
 pub fn strip(g: &Perm, beta_transversals: &[(usize, Transversal)]) -> (Vec<Perm>, Perm) {
     let mut h = g.clone();
     let mut us = vec![];
-    for i in 0..beta_transversals.len() {
-        let (beta, ref transversal) = beta_transversals[i];
+    for &(beta, ref transversal) in beta_transversals {
         let moved_to = h[beta];
         match transversal[moved_to] {
             None =>
@@ -30,8 +29,8 @@ pub fn schreier_sims(
     beta_transversals: &[(usize, Transversal)],
     s: &[Perm],
 ) -> Result<(), (Vec<Perm>, Perm)> {
-    if beta_transversals.len() == 0 {
-        if s.len() == 0 {
+    if beta_transversals.is_empty() {
+        if s.is_empty() {
             return Ok(());
         }
         return Err((vec![], s[0].clone()));
@@ -45,11 +44,11 @@ pub fn schreier_sims(
         }
     }
     schreier_sims(n, &beta_transversals[1..], &intersection)?;
-    let (_orbit, y) = orbit_transversal_stabilizer(n, s, beta0);
+    let (_, y) = orbit_transversal_stabilizer(n, s, beta0);
     for y in y {
-        let (u, h) = strip(&y, &beta_transversals[1..]);
-        if h != Perm::e(n) {
-            return Err((u, h));
+        let (us, rest) = strip(&y, &beta_transversals[1..]);
+        if rest != Perm::e(n) {
+            return Err((us, rest));
         }
     }
     Ok(())
@@ -66,19 +65,18 @@ pub fn incrementally_build_bsgs(
     let mut s = initial_s.to_vec();
     let mut used = vec![false; n];
     let dummy_transversal = vec![]; // dummy transversals
-    for i in 0..initial_beta.len() {
-        beta_transversals.push((initial_beta[i], dummy_transversal.clone()));
+    for &beta in initial_beta {
+        beta_transversals.push((beta, dummy_transversal.clone()));
     }
     loop {
         // preliminary result
         // TODO reuse transversals
         {
             let mut cur_s = s.clone();
-            for i in 0..beta_transversals.len() {
-                let beta = beta_transversals[i].0;
+            for &mut (beta, ref mut transversal_ref) in &mut beta_transversals {
                 let (orbit_transversal, _) = orbit_transversal_stabilizer(n, &cur_s, beta);
                 let transversal = get_transversal(n, orbit_transversal);
-                beta_transversals[i].1 = transversal;
+                *transversal_ref = transversal;
                 cur_s = cur_s
                     .into_iter()
                     .filter(|perm| perm[beta] == beta)
@@ -104,7 +102,7 @@ pub fn incrementally_build_bsgs(
                         moved.push(i);
                     }
                 }
-                if moved.len() > 0 {
+                if !moved.is_empty() {
                     // All points that are not stabilized by h are not in beta.
                     // randomly pick one of them
                     let point = moved[rnd.gen_range(0, moved.len())];
