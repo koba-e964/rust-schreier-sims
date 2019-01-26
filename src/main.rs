@@ -1,7 +1,6 @@
 use rust_schreier::perm::Perm;
 use rust_schreier::schreier::incrementally_build_bsgs;
 
-
 fn main() {
     // G = <(0 1 2), (2 3 4)>
     let n = 5;

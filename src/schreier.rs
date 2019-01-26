@@ -1,26 +1,26 @@
-use rand::Rng;
 use crate::perm::Perm;
-use crate::transversal::{Transversal, orbit_transversal_stabilizer};
+use crate::transversal::{get_transversal, orbit_transversal_stabilizer, Transversal};
+use rand::Rng;
 
 // Reference: https://blogs.cs.st-andrews.ac.uk/codima/files/2015/11/CoDiMa2015_Holt.pdf
 
-pub fn strip(
-    g: &Perm,
-    beta_transversals: &[(usize, Transversal)]
-) -> (Vec<Perm>, Perm) {
+pub fn strip(g: &Perm, beta_transversals: &[(usize, Transversal)]) -> (Vec<Perm>, Perm) {
     let mut h = g.clone();
     let mut us = vec![];
     for i in 0..beta_transversals.len() {
         let (beta, ref transversal) = beta_transversals[i];
         let moved_to = h[beta];
-        let repr = &transversal[moved_to];
-        // If repr is dummy, that is, moved_to is not in beta^H
-        // TODO refactor
-        if repr.size() == 0 {
-            return (us, h);
+        match transversal[moved_to] {
+            None =>
+            // If repr is dummy, that is, moved_to is not in beta^H
+            {
+                return (us, h);
+            }
+            Some(ref repr) => {
+                h = h.compose(&repr.inv());
+                us.push(repr.clone());
+            }
         }
-        h = h.compose(&repr.inv());
-        us.push(repr.clone());
     }
     (us, h)
 }
@@ -77,10 +77,7 @@ pub fn incrementally_build_bsgs(
             for i in 0..beta_transversals.len() {
                 let beta = beta_transversals[i].0;
                 let (orbit_transversal, _) = orbit_transversal_stabilizer(n, &cur_s, beta);
-                let mut transversal = vec![Perm::e(0); n];
-                for (point, trans) in orbit_transversal {
-                    transversal[point] = trans;
-                }
+                let transversal = get_transversal(n, orbit_transversal);
                 beta_transversals[i].1 = transversal;
                 cur_s = cur_s
                     .into_iter()
@@ -92,8 +89,7 @@ pub fn incrementally_build_bsgs(
 
         // Incrementally computes Y and check if it's okay.
         match schreier_sims(n, &beta_transversals, &s) {
-            Ok(()) =>
-                break,
+            Ok(()) => break,
             Err((_, h)) => {
                 s.push(h.clone());
                 // Are there any points that are not stabilized by h
@@ -135,18 +131,12 @@ mod tests {
         let beta = vec![0, 2];
         let (orbit_transversal0, subgen) = orbit_transversal_stabilizer(n, &gen, beta[0]);
         assert_eq!(orbit_transversal0.len(), 5);
-        let mut transversal0 = vec![Perm::e(0); n];
-        for (point, trans) in orbit_transversal0 {
-            transversal0[point] = trans;
-        }
+        let transversal0 = get_transversal(n, orbit_transversal0);
         let (orbit_transversal1, _) = orbit_transversal_stabilizer(n, &subgen, beta[1]);
         assert_eq!(orbit_transversal1.len(), 4);
-        let mut transversal1 = vec![Perm::e(0); n];
-        for (point, trans) in orbit_transversal1 {
-            transversal1[point] = trans;
-        }
+        let transversal1 = get_transversal(n, orbit_transversal1);
         // orbit 1^{G^{(1)}} is {1, 2, 3, 4}.
-        assert_eq!(transversal1[0], Perm::e(0));
+        assert_eq!(transversal1[0], None);
 
         let beta_transversals = vec![(beta[0], transversal0), (beta[1], transversal1)];
         let ans = schreier_sims(5, &beta_transversals, &gen);
@@ -177,7 +167,7 @@ mod tests {
         for (_, transversal) in beta_transversals {
             let mut u = 0;
             for i in 0..n {
-                if transversal[i].size() != 0 {
+                if let Some(_) = transversal[i] {
                     u += 1;
                 }
             }

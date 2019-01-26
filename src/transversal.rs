@@ -1,18 +1,22 @@
-use std::collections::VecDeque;
 use crate::perm::Perm;
+use std::collections::VecDeque;
 
 // Reference: https://blogs.cs.st-andrews.ac.uk/codima/files/2015/11/CoDiMa2015_Holt.pdf
 
 // A collection of pairs (x, alpha) s.t. v^alpha = x.
 pub type OrbitTransversal = Vec<(usize, Perm)>;
 
-// An oracle of type usize -> Perm.
-pub type Transversal = Vec<Perm>;
+// An oracle of type usize -> Option<Perm>.
+pub type Transversal = Vec<Option<Perm>>;
 
 /// gen: generators, v: stabilized point
 ///
 /// This function returns a generator set of the stabilizer group G_v = Stab_G(v).
-pub fn orbit_transversal_stabilizer(n: usize, gen: &[Perm], v: usize) -> (OrbitTransversal, Vec<Perm>) {
+pub fn orbit_transversal_stabilizer(
+    n: usize,
+    gen: &[Perm],
+    v: usize,
+) -> (OrbitTransversal, Vec<Perm>) {
     let mut stabilizer_gen = Vec::new();
     // Calculates a variant of the Schreier vector
     // performing breadth-first search.
@@ -40,26 +44,16 @@ pub fn orbit_transversal_stabilizer(n: usize, gen: &[Perm], v: usize) -> (OrbitT
     stabilizer_gen.sort();
     stabilizer_gen.dedup();
 
-    // Returns ((G : G_v), a generator set of G_v)
+    // Returns (Vec of (point, representative), a generator set of G_v)
     (orbit_transversal, stabilizer_gen)
 }
 
-pub fn strip(g: &Perm, beta_transversals: &[(usize, Transversal)]) -> (Vec<Perm>, Perm) {
-    let mut h = g.clone();
-    let mut us = vec![];
-    for i in 0..beta_transversals.len() {
-        let (beta, ref transversal) = beta_transversals[i];
-        let moved_to = h[beta];
-        let repr = &transversal[moved_to];
-        // If repr is dummy, that is, moved_to is not in beta^H
-        // TODO refactor
-        if repr.size() == 0 {
-            return (us, h);
-        }
-        h = h.compose(&repr.inv());
-        us.push(repr.clone());
+pub fn get_transversal(n: usize, orbit_transversal: OrbitTransversal) -> Transversal {
+    let mut transversal = vec![None; n];
+    for (point, trans) in orbit_transversal {
+        transversal[point] = Some(trans);
     }
-    (us, h)
+    transversal
 }
 
 #[cfg(test)]

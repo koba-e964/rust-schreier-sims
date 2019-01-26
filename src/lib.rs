@@ -1,3 +1,3 @@
 pub mod perm;
-pub mod transversal;
 pub mod schreier;
+pub mod transversal;
