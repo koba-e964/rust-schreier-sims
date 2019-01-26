@@ -114,6 +114,22 @@ pub fn incrementally_build_bsgs(
     (beta_transversals, s)
 }
 
+pub fn order(n: usize, gen: &[Perm]) -> num_bigint::BigInt {
+    let mut order = 1.into();
+    let mut rnd = rand::thread_rng();
+    let (beta_transversals, _) = incrementally_build_bsgs(n, &[], gen, &mut rnd);
+    for (_, transversal) in beta_transversals {
+        let mut u = 0;
+        for i in 0..n {
+            if let Some(_) = transversal[i] {
+                u += 1;
+            }
+        }
+        order *= u;
+    }
+    order
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,5 +188,41 @@ mod tests {
             order *= u;
         }
         assert_eq!(order, 60);
+    }
+    #[test]
+    fn order_test_0() {
+        // G = <(0 1 2), (2 3 4)> = A_5, |G| = 60
+        let n = 5;
+        let gen = vec![
+            Perm::new(vec![1, 2, 0, 3, 4]),
+            Perm::new(vec![0, 1, 3, 4, 2]),
+        ];
+        assert_eq!(order(n, &gen), 60.into());
+    }
+    #[test]
+    fn order_test_1() {
+        // G = <(0 1 2 3), (0 2)> ~= D_8, |G| = 8
+        let n = 4;
+        let gen = vec![Perm::new(vec![1, 2, 3, 0]), Perm::new(vec![2, 1, 0, 3])];
+        assert_eq!(order(n, &gen), 8.into());
+    }
+    #[test]
+    fn order_test_2() {
+        // Star, G = <(0 n-1), (1 n-1), ...> = S_n, |G| = n!
+        let n = 10;
+        let mut gen = vec![];
+        for i in 0..n - 1 {
+            let mut p = vec![0; n];
+            for j in 0..n {
+                p[j] = j;
+            }
+            p.swap(i, n - 1);
+            gen.push(Perm::new(p));
+        }
+        let mut factorial: num_bigint::BigInt = 1.into();
+        for i in 1..n + 1 {
+            factorial *= i;
+        }
+        assert_eq!(order(n, &gen), factorial);
     }
 }

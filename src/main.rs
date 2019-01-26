@@ -1,18 +1,17 @@
 use rust_schreier::perm::Perm;
-use rust_schreier::schreier::incrementally_build_bsgs;
+use rust_schreier::schreier::order;
 
 fn main() {
-    // G = <(0 1 2), (2 3 4)>
-    let n = 5;
-    let gen = vec![
-        Perm::new(vec![1, 2, 0, 3, 4]),
-        Perm::new(vec![0, 1, 3, 4, 2]),
-    ];
-    let beta = vec![0, 2];
-    let mut rnd = rand::thread_rng();
-    let (beta_transversals, s) = incrementally_build_bsgs(n, &beta, &gen, &mut rnd);
-    for (beta, transversal) in beta_transversals {
-        eprintln!("beta: {}, transversal = {:?}", beta, transversal);
+    // Star, G = <(0 n-1), (1 n-1), ...> = S_n, |G| = n!
+    let n = 20;
+    let mut gen = vec![];
+    for i in 0..n - 1 {
+        let mut p = vec![0; n];
+        for j in 0..n {
+            p[j] = j;
+        }
+        p.swap(i, n - 1);
+        gen.push(Perm::new(p));
     }
-    eprintln!("s = {:?}", s);
+    eprintln!("order = {}", order(n, &gen));
 }
