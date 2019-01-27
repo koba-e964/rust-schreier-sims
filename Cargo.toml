@@ -7,3 +7,10 @@ edition = "2018"
 [dependencies]
 num-bigint = "0.2"
 rand = "0.6.4"
+
+[dev-dependencies]
+criterion = "0.2"
+
+[[bench]]
+name = "schreier_bench"
+harness = false
