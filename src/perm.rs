@@ -53,6 +53,20 @@ impl Perm {
         }
         sum
     }
+    /// Returns a new permutation of self.size() + a.size().
+    pub fn concat(&self, a: &Perm) -> Perm {
+        let n = self.size();
+        let m = a.size();
+        let mut v = vec![0; n + m];
+
+        for i in 0..n {
+            v[i] = self[i];
+        }
+        for i in 0..m {
+            v[n + i] = n + a[i];
+        }
+        Perm::new(v)
+    }
 }
 
 impl std::ops::Index<usize> for Perm {
