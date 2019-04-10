@@ -23,6 +23,7 @@ pub fn is_homomorphism(n: usize, m: usize, x: &[Perm], y: &[Perm]) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::rubik;
 
     #[test]
     fn is_homomorphism_test_a2_a3() {
@@ -63,5 +64,37 @@ mod tests {
             Perm::new(vec![2, 3, 0, 1, 5, 4]),
         ];
         assert!(is_homomorphism(6, 6, &x, &y));
+    }
+    #[test]
+    fn is_homomorphism_test_rubik_corner_cubes() {
+        // Rubik's Cube group
+        let (n, gen) = rubik::generators();
+        assert_eq!(n, 48);
+        // Corner cubes are labeled with even numbers
+        let evengen: Vec<_> = gen.iter().map(|g| {
+            let m = 24;
+            let mut v = vec![0; m];
+            for i in 0..m {
+                v[i] = g[2 * i] / 2;
+            }
+            Perm::new(v)
+        }).collect();
+        is_homomorphism(n, n / 2, &gen, &evengen);
+    }
+    #[test]
+    fn is_homomorphism_test_rubik_edge_cubes() {
+        // Rubik's Cube group
+        let (n, gen) = rubik::generators();
+        assert_eq!(n, 48);
+        // Edge cubes are labeled with odd numbers
+        let oddgen: Vec<_> = gen.iter().map(|g| {
+            let m = 24;
+            let mut v = vec![0; m];
+            for i in 0..m {
+                v[i] = g[2 * i + 1] / 2;
+            }
+            Perm::new(v)
+        }).collect();
+        is_homomorphism(n, n / 2, &gen, &oddgen);
     }
 }
