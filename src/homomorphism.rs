@@ -41,4 +41,31 @@ mod tests {
         let y = vec![Perm::new(vec![1, 0]), Perm::e(2)];
         assert!(is_homomorphism(4, 2, &x, &y));
     }
+    #[test]
+    fn is_homomorphism_test_s6_outer_automorphism() {
+        // _The_ outer automorphism S6 -> S6
+        // described in http://www2u.biglobe.ne.jp/~nuida/m/doc/OutS6.pdf.
+        // This test verifies that the map given in the article is indeed
+        // a homomorphism.
+        let transposition = |x, y| {
+            let mut v: Vec<usize> = (0..6).collect();
+            v.swap(x, y);
+            Perm::new(v)
+        };
+        let x = vec![
+            transposition(0, 1),
+            transposition(1, 2),
+            transposition(2, 3),
+            transposition(3, 4),
+            transposition(4, 5),
+        ];
+        let y = vec![
+            Perm::new(vec![1, 0, 3, 2, 5, 4]),
+            Perm::new(vec![5, 3, 4, 1, 2, 0]),
+            Perm::new(vec![3, 2, 1, 0, 5, 4]),
+            Perm::new(vec![5, 4, 3, 2, 1, 0]),
+            Perm::new(vec![2, 3, 0, 1, 5, 4]),
+        ];
+        assert!(is_homomorphism(6, 6, &x, &y));
+    }
 }
