@@ -4,17 +4,18 @@ use rand::Rng;
 
 // Reference: https://blogs.cs.st-andrews.ac.uk/codima/files/2015/11/CoDiMa2015_Holt.pdf
 
-pub fn strip(g: &Perm, beta_transversals: &[(usize, Transversal)]) -> (Vec<Perm>, Perm) {
+/// The returned vaule ([u0, ...], h) must satisfy g = u0 * ... * h.
+pub fn strip(
+    g: &Perm,
+    beta_transversals: &[(usize, Transversal)]
+) -> (Vec<Perm>, Perm) {
     let mut h = g.clone();
     let mut us = vec![];
     for &(beta, ref transversal) in beta_transversals {
         let moved_to = h[beta];
         match transversal[moved_to] {
-            None =>
-            // If repr is dummy, that is, moved_to is not in beta^H
-            {
-                return (us, h);
-            }
+            // If repr is dummy, that is, moved_to is not in the orbit beta^H
+            None => break,
             Some(ref repr) => {
                 h = h.compose(&repr.inv());
                 us.push(repr.clone());
