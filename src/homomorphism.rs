@@ -23,7 +23,7 @@ pub fn is_homomorphism(n: usize, m: usize, x: &[Perm], y: &[Perm]) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rubik;
+    use crate::groups::rubik;
 
     #[test]
     fn is_homomorphism_test_a2_a3() {

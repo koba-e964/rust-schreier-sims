@@ -134,7 +134,7 @@ pub fn order(n: usize, gen: &[Perm]) -> num_bigint::BigInt {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::rubik;
+    use crate::groups::rubik;
 
     #[test]
     fn schreier_sims_test() {
