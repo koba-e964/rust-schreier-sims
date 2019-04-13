@@ -1,4 +1,4 @@
-# rust-schreier-sims
+# rust-schreier-sims [![Build Status](https://travis-ci.org/koba-e964/rust-schreier-sims.svg?branch=master)](https://travis-ci.org/koba-e964/rust-schreier-sims)
 An implementation of Schreier-Sims algorithm in group theory.
 
 This repository gives an implementation of [Schreier-Sims algorithm](https://en.wikipedia.org/wiki/Schreier%E2%80%93Sims_algorithm).
