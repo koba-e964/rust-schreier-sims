@@ -134,7 +134,7 @@ pub fn order(n: usize, gen: &[Perm]) -> num_bigint::BigInt {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::groups::rubik;
+    use crate::groups::{mathieu12, rubik};
 
     #[test]
     fn schreier_sims_test() {
@@ -235,6 +235,15 @@ mod tests {
         assert_eq!(
             order(n, &gen),
             num_bigint::BigInt::from_str("43252003274489856000").unwrap()
+        );
+    }
+    #[test]
+    fn order_test_4() {
+        // The Mathieu group M12
+        let (n, gen) = mathieu12::generators();
+        assert_eq!(
+            order(n, &gen),
+            95040.into()
         );
     }
 }
