@@ -5,10 +5,7 @@ use rand::Rng;
 // Reference: https://blogs.cs.st-andrews.ac.uk/codima/files/2015/11/CoDiMa2015_Holt.pdf
 
 /// The returned vaule ([u0, ...], h) must satisfy g = u0 * ... * h.
-pub fn strip(
-    g: &Perm,
-    beta_transversals: &[(usize, Transversal)]
-) -> (Vec<Perm>, Perm) {
+pub fn strip(g: &Perm, beta_transversals: &[(usize, Transversal)]) -> (Vec<Perm>, Perm) {
     let mut h = g.clone();
     let mut us = vec![];
     for &(beta, ref transversal) in beta_transversals {
@@ -241,9 +238,6 @@ mod tests {
     fn order_test_4() {
         // The Mathieu group M12
         let (n, gen) = mathieu12::generators();
-        assert_eq!(
-            order(n, &gen),
-            95040.into()
-        );
+        assert_eq!(order(n, &gen), 95040.into());
     }
 }
