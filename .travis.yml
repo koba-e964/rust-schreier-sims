@@ -9,12 +9,13 @@ matrix:
   allow_failures:
     - rust: nightly
 
-before_script:
-  - rustup component add clippy-preview
+install:
+  - rustup component add clippy rustfmt
 
 script:
-  - cargo test --release --all
+  - cargo test --release --all --verbose
   - cargo clippy --all
+  - cargo fmt -- --check
 
 env:
   global:
