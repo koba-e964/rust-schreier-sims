@@ -67,6 +67,20 @@ impl Perm {
         }
         Perm::new(v)
     }
+
+    pub fn sgn(&self) -> i8 {
+        // inversion count, O(n^2)
+        let n = self.size();
+        let mut ans = 1;
+        for i in 0..n {
+            for j in 0..i {
+                if self[j] > self[i] {
+                    ans = -ans;
+                }
+            }
+        }
+        ans
+    }
 }
 
 impl std::ops::Index<usize> for Perm {
@@ -76,6 +90,45 @@ impl std::ops::Index<usize> for Perm {
         let Perm(x) = &self;
         &x[index]
     }
+}
+
+pub fn all_permutations(n: usize) -> Vec<Perm> {
+    let mut ans = vec![];
+
+    let mut v: Vec<usize> = (0..n).collect();
+
+    loop {
+        ans.push(Perm::new(v.clone()));
+        let mut tail_dec: usize = 1;
+        while tail_dec < n {
+            if v[n - tail_dec - 1] > v[n - tail_dec] {
+                tail_dec += 1;
+            } else {
+                break;
+            }
+        }
+        // v[n - tail_dec .. n] is strictly decreasing
+        if tail_dec < n {
+            let x = n - tail_dec - 1;
+            let mut y = n;
+            {
+                let pivot = &v[x];
+                for i in (n - tail_dec..n).rev() {
+                    if v[i] > *pivot {
+                        y = i;
+                        break;
+                    }
+                }
+                assert!(y < n);
+            }
+            v.swap(x, y);
+        }
+        v[n - tail_dec..n].reverse();
+        if tail_dec >= n {
+            break;
+        }
+    }
+    ans
 }
 
 #[cfg(test)]
@@ -93,5 +146,11 @@ mod tests {
         assert_eq!(p.pow(-5), Perm::e(5));
         // p^{-3} = p^2 = pp
         assert_eq!(p.pow(-3), p.compose(&p));
+    }
+
+    #[test]
+    fn all_permutations_test() {
+        let all = all_permutations(3);
+        assert_eq!(all.len(), 6);
     }
 }
