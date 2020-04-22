@@ -71,14 +71,17 @@ mod tests {
         let (n, gen) = rubik::generators();
         assert_eq!(n, 48);
         // Corner cubes are labeled with even numbers
-        let evengen: Vec<_> = gen.iter().map(|g| {
-            let m = 24;
-            let mut v = vec![0; m];
-            for i in 0..m {
-                v[i] = g[2 * i] / 2;
-            }
-            Perm::new(v)
-        }).collect();
+        let evengen: Vec<_> = gen
+            .iter()
+            .map(|g| {
+                let m = 24;
+                let mut v = vec![0; m];
+                for i in 0..m {
+                    v[i] = g[2 * i] / 2;
+                }
+                Perm::new(v)
+            })
+            .collect();
         is_homomorphism(n, n / 2, &gen, &evengen);
     }
     #[test]
@@ -87,14 +90,17 @@ mod tests {
         let (n, gen) = rubik::generators();
         assert_eq!(n, 48);
         // Edge cubes are labeled with odd numbers
-        let oddgen: Vec<_> = gen.iter().map(|g| {
-            let m = 24;
-            let mut v = vec![0; m];
-            for i in 0..m {
-                v[i] = g[2 * i + 1] / 2;
-            }
-            Perm::new(v)
-        }).collect();
+        let oddgen: Vec<_> = gen
+            .iter()
+            .map(|g| {
+                let m = 24;
+                let mut v = vec![0; m];
+                for i in 0..m {
+                    v[i] = g[2 * i + 1] / 2;
+                }
+                Perm::new(v)
+            })
+            .collect();
         is_homomorphism(n, n / 2, &gen, &oddgen);
     }
 }

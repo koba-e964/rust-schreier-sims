@@ -1,6 +1,6 @@
 // Utility functions for Rubik's cube group.
-use crate::perm::Perm;
 use crate::groups::util::get_cycle;
+use crate::perm::Perm;
 
 pub fn generators() -> (usize, Vec<Perm>) {
     // Rubik's Cube group
