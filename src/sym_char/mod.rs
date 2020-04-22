@@ -1,5 +1,6 @@
 use char_entry::{CharEntry, ClassLike};
 use num_bigint::BigInt;
+use std::hash::Hash;
 
 mod char_entry;
 
@@ -8,7 +9,10 @@ pub struct CharTableSummary {
     pub remaining: BigInt,
 }
 
-fn find_new_entry<C: ClassLike>(g: &[C], ans: &[CharEntry]) -> Option<CharEntry> {
+fn find_new_entry<C: ClassLike + Eq + Hash + Clone>(
+    g: &[C],
+    ans: &[CharEntry],
+) -> Option<CharEntry> {
     let n = ans.len();
 
     for i in 0..n {
@@ -19,20 +23,36 @@ fn find_new_entry<C: ClassLike>(g: &[C], ans: &[CharEntry]) -> Option<CharEntry>
                 tensor -= &ans[j].power(inp);
             }
             let norm = tensor.inner_prod(&tensor, g);
-            eprintln!(
-                "found: ({}) tensor ({}) gives a rep of dim {}, norm {}",
-                i, j, tensor.table[0], norm
-            );
             if norm == 1.into() {
                 // A new irrep was found.
+                eprintln!(
+                    "found: ({}) tensor ({}) gives a rep of dim {}, norm {}",
+                    i, j, tensor.table[0], norm
+                );
                 return Some(tensor);
             }
+        }
+    }
+    for i in 0..n {
+        let mut alt_tensor = ans[i].ext_power_2nd(g);
+        for j in 0..n {
+            let inp = alt_tensor.inner_prod(&ans[j], g);
+            alt_tensor -= &ans[j].power(inp);
+        }
+        let norm = alt_tensor.inner_prod(&alt_tensor, g);
+        if norm == 1.into() {
+            // A new irrep was found.
+            eprintln!(
+                "found: Lambda^2(({})) gives a rep of dim {}, norm {}",
+                i, alt_tensor.table[0], norm
+            );
+            return Some(alt_tensor);
         }
     }
     None
 }
 
-pub fn get_char_table<C: ClassLike>(n: usize, g: &[C]) -> CharTableSummary {
+pub fn get_char_table<C: ClassLike + Eq + Hash + Clone>(n: usize, g: &[C]) -> CharTableSummary {
     let mut ans = vec![];
     let glen = g.len();
     // add trivial repr
@@ -78,6 +98,7 @@ pub fn get_char_table<C: ClassLike>(n: usize, g: &[C]) -> CharTableSummary {
             let dim = &new_irrep.table[0];
             remaining -= dim * dim;
             ans.push(new_irrep);
+            eprintln!("remaining = {}", remaining);
         } else {
             break;
         }

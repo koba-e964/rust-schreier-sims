@@ -1,4 +1,4 @@
-#[derive(Clone, Eq, PartialEq, Debug, PartialOrd, Ord)]
+#[derive(Clone, Eq, PartialEq, Debug, PartialOrd, Ord, Hash)]
 pub struct Perm(Vec<usize>);
 impl Perm {
     pub fn new(perm: Vec<usize>) -> Perm {

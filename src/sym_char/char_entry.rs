@@ -1,5 +1,7 @@
 use crate::perm::Perm;
 use num_bigint::BigInt;
+use std::collections::HashMap;
+use std::hash::Hash;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 pub trait ClassLike {
@@ -74,6 +76,26 @@ impl CharEntry {
         );
         for i in 0..self.len() {
             ret.table[i] = &self.table[i] * &other.table[i];
+        }
+        ret
+    }
+    pub fn ext_power_2nd<C: ClassLike + Eq + Hash + Clone>(&self, g: &[C]) -> Self {
+        let mut map = HashMap::new();
+        let n = g.len();
+        for i in 0..n {
+            map.insert(g[i].clone(), i);
+        }
+        let mut ret = CharEntry::from_order(
+            "alt_tensor".to_string(),
+            self.len(),
+            0.into(),
+            self.order.clone(),
+        );
+        for i in 0..self.len() {
+            let g2 = g[i].to_repr();
+            let g2 = g2.compose(&g2);
+            let idx = map[&C::get_class(&g2)];
+            ret.table[i] = (&self.table[i] * &self.table[i] - &self.table[idx]) / 2;
         }
         ret
     }
