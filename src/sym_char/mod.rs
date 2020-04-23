@@ -49,6 +49,22 @@ fn find_new_entry<C: ClassLike + Eq + Hash + Clone>(
             return Some(alt_tensor);
         }
     }
+    for i in 0..n {
+        let mut alt_tensor = ans[i].ext_power_3rd(g);
+        for j in 0..n {
+            let inp = alt_tensor.inner_prod(&ans[j], g);
+            alt_tensor -= &ans[j].power(inp);
+        }
+        let norm = alt_tensor.inner_prod(&alt_tensor, g);
+        if norm == 1.into() {
+            // A new irrep was found.
+            eprintln!(
+                "found: Lambda^3(({})) gives a rep of dim {}, norm {}",
+                i, alt_tensor.table[0], norm
+            );
+            return Some(alt_tensor);
+        }
+    }
     None
 }
 

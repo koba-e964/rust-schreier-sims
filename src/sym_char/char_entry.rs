@@ -86,7 +86,7 @@ impl CharEntry {
             map.insert(g[i].clone(), i);
         }
         let mut ret = CharEntry::from_order(
-            "alt_tensor".to_string(),
+            "Lambda^2".to_string(),
             self.len(),
             0.into(),
             self.order.clone(),
@@ -96,6 +96,31 @@ impl CharEntry {
             let g2 = g2.compose(&g2);
             let idx = map[&C::get_class(&g2)];
             ret.table[i] = (&self.table[i] * &self.table[i] - &self.table[idx]) / 2;
+        }
+        ret
+    }
+    pub fn ext_power_3rd<C: ClassLike + Eq + Hash + Clone>(&self, g: &[C]) -> Self {
+        let mut map = HashMap::new();
+        let n = g.len();
+        for i in 0..n {
+            map.insert(g[i].clone(), i);
+        }
+        let mut ret = CharEntry::from_order(
+            "Lambda^3".to_string(),
+            self.len(),
+            0.into(),
+            self.order.clone(),
+        );
+        for i in 0..self.len() {
+            let g = g[i].to_repr();
+            let g2 = g.compose(&g);
+            let g3 = g2.compose(&g);
+            let idx2 = map[&C::get_class(&g2)];
+            let idx3 = map[&C::get_class(&g3)];
+            let ch1 = &self.table[i];
+            let ch2 = &self.table[idx2];
+            let ch3 = &self.table[idx3];
+            ret.table[i] = (ch1 * ch1 * ch1 - ch1 * ch2 * 3 + 2 * ch3) / 6;
         }
         ret
     }

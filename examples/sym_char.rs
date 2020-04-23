@@ -2,7 +2,7 @@ use rust_schreier::perm::all_permutations;
 use rust_schreier::sym_char::{get_char_table, CharTableSummary};
 
 fn main() {
-    let n = 6;
+    let n = 8;
     let all = all_permutations(n);
     let CharTableSummary {
         table: ans,
