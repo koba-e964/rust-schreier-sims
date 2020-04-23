@@ -1,9 +1,9 @@
-use rust_schreier::perm::all_permutations;
+use rust_schreier::sym_char::classes::get_all_concjugacy_classes;
 use rust_schreier::sym_char::{get_char_table, CharTableSummary};
 
 fn main() {
-    let n = 8;
-    let all = all_permutations(n);
+    let n = 10;
+    let all = get_all_concjugacy_classes(n);
     let CharTableSummary {
         table: ans,
         remaining,

@@ -1,8 +1,10 @@
-use char_entry::{CharEntry, ClassLike};
+use char_entry::CharEntry;
+use classes::ClassLike;
 use num_bigint::BigInt;
 use std::hash::Hash;
 
-mod char_entry;
+pub mod char_entry;
+pub mod classes;
 
 pub struct CharTableSummary {
     pub table: Vec<CharEntry>,
@@ -71,6 +73,11 @@ fn find_new_entry<C: ClassLike + Eq + Hash + Clone>(
 pub fn get_char_table<C: ClassLike + Eq + Hash + Clone>(n: usize, g: &[C]) -> CharTableSummary {
     let mut ans = vec![];
     let glen = g.len();
+    let mut order = BigInt::from(0);
+    for g in g {
+        order += g.get_size();
+    }
+
     // add trivial repr
     {
         ans.push(CharEntry::new("triv".to_string(), 1.into(), &g));
@@ -99,7 +106,7 @@ pub fn get_char_table<C: ClassLike + Eq + Hash + Clone>(n: usize, g: &[C]) -> Ch
         ans.push(std);
     }
 
-    let mut remaining = num_bigint::BigInt::from(glen);
+    let mut remaining = order;
 
     for r in &ans {
         // Assuming g[0] = e

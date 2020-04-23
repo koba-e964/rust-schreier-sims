@@ -1,26 +1,9 @@
-use crate::perm::Perm;
+use super::classes::ClassLike;
 use num_bigint::BigInt;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
-pub trait ClassLike {
-    fn to_repr(&self) -> Perm;
-    fn get_class(p: &Perm) -> Self;
-    fn get_size(&self) -> BigInt;
-}
-
-impl ClassLike for Perm {
-    fn to_repr(&self) -> Perm {
-        self.clone()
-    }
-    fn get_class(p: &Perm) -> Self {
-        p.clone()
-    }
-    fn get_size(&self) -> BigInt {
-        1.into()
-    }
-}
 pub struct CharEntry {
     pub name: String,
     pub order: BigInt,
