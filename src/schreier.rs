@@ -175,12 +175,8 @@ mod tests {
         // |G| should be 60. In fact, G = A_5.
         let mut order = 1;
         for (_, transversal) in beta_transversals {
-            let mut u = 0;
-            for i in 0..n {
-                if let Some(_) = transversal[i] {
-                    u += 1;
-                }
-            }
+            assert_eq!(transversal.len(), n);
+            let u = transversal.iter().filter(|x| x.is_some()).count() as i32;
             order *= u;
         }
         assert_eq!(order, 60);
@@ -208,10 +204,7 @@ mod tests {
         let n = 10;
         let mut gen = vec![];
         for i in 0..n - 1 {
-            let mut p = vec![0; n];
-            for j in 0..n {
-                p[j] = j;
-            }
+            let mut p = (0..n).collect::<Vec<_>>();
             p.swap(i, n - 1);
             gen.push(Perm::new(p));
         }

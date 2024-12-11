@@ -12,10 +12,7 @@ fn star_benchmark_10(c: &mut Criterion) {
             let n = 10;
             let mut gen = vec![];
             for i in 0..n - 1 {
-                let mut p = vec![0; n];
-                for j in 0..n {
-                    p[j] = j;
-                }
+                let mut p = (0..n).collect::<Vec<_>>();
                 p.swap(i, n - 1);
                 gen.push(Perm::new(p));
             }
@@ -30,10 +27,7 @@ fn star_benchmark_20(c: &mut Criterion) {
             let n = 20;
             let mut gen = vec![];
             for i in 0..n - 1 {
-                let mut p = vec![0; n];
-                for j in 0..n {
-                    p[j] = j;
-                }
+                let mut p = (0..n).collect::<Vec<_>>();
                 p.swap(i, n - 1);
                 gen.push(Perm::new(p));
             }
@@ -48,10 +42,7 @@ fn star_benchmark_30(c: &mut Criterion) {
             let n = 30;
             let mut gen = vec![];
             for i in 0..n - 1 {
-                let mut p = vec![0; n];
-                for j in 0..n {
-                    p[j] = j;
-                }
+                let mut p = (0..n).collect::<Vec<_>>();
                 p.swap(i, n - 1);
                 gen.push(Perm::new(p));
             }
