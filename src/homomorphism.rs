@@ -1,8 +1,8 @@
 use crate::perm::Perm;
 use crate::schreier::incrementally_build_bsgs;
 
-/// Checks if a given mapping (x[i] |-> y[i]) extends to a group homomorphism
-/// <x> -> <y>.
+/// Checks if a given mapping (x\[i\] |-> y\[i\]) extends to a group homomorphism
+/// &lt;x&gt; -> &lt;y&gt;.
 pub fn is_homomorphism(n: usize, m: usize, x: &[Perm], y: &[Perm]) -> bool {
     assert_eq!(x.len(), y.len());
     let mut rnd = rand::thread_rng();

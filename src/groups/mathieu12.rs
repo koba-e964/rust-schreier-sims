@@ -2,7 +2,7 @@
 use crate::groups::util::get_cycle;
 use crate::perm::Perm;
 
-/// Reference: http://brauer.maths.qmul.ac.uk/Atlas/v3/permrep/M12G1-p12aB0
+/// Reference: <http://brauer.maths.qmul.ac.uk/Atlas/v3/permrep/M12G1-p12aB0>
 pub fn generators() -> (usize, Vec<Perm>) {
     // In GAP, the following two generators are defined by:
     // b11 := (1,4)(3,10)(5,11)(6,12);
