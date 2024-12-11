@@ -43,7 +43,7 @@ fn star_benchmark_20(c: &mut Criterion) {
 }
 fn star_benchmark_30(c: &mut Criterion) {
     // Star, G = <(0 n-1), (1 n-1), ...> = S_n, |G| = n!
-    c.bench_function("star 20", |b| {
+    c.bench_function("star 30", |b| {
         b.iter(|| {
             let n = 30;
             let mut gen = vec![];

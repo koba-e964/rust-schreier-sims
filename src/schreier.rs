@@ -75,10 +75,7 @@ pub fn incrementally_build_bsgs(
                 let (orbit_transversal, _) = orbit_transversal_stabilizer(n, &cur_s, beta);
                 let transversal = get_transversal(n, orbit_transversal);
                 *transversal_ref = transversal;
-                cur_s = cur_s
-                    .into_iter()
-                    .filter(|perm| perm[beta] == beta)
-                    .collect();
+                cur_s.retain(|perm| perm[beta] == beta);
                 used[beta] = true;
             }
         }
@@ -103,7 +100,7 @@ pub fn incrementally_build_bsgs(
                 if !moved.is_empty() {
                     // All points that are not stabilized by h are not in beta.
                     // randomly pick one of them
-                    let point = moved[rnd.gen_range(0, moved.len())];
+                    let point = moved[rnd.gen_range(0..moved.len())];
                     beta_transversals.push((point, dummy_transversal.clone()));
                 }
             }

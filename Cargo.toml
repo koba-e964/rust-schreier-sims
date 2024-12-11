@@ -2,14 +2,15 @@
 name = "rust-schreier"
 version = "0.1.0"
 authors = ["koba-e964 <3303362+koba-e964@users.noreply.github.com>"]
-edition = "2018"
+edition = "2021"
+publish = false
 
 [dependencies]
-num-bigint = "0.2"
-rand = "0.6.4"
+num-bigint = "0.4"
+rand = "0.8"
 
 [dev-dependencies]
-criterion = "0.2"
+criterion = "0.5"
 
 [[bench]]
 name = "schreier_bench"
